@@ -11,10 +11,11 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.*;
 import java.util.HashSet;
 import java.util.Set;
 
-@ToString
+@ToString(exclude = "hashtags")
 @Entity
 @Table
 @Getter
@@ -48,11 +49,11 @@ public class Board {
     private int views;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<BoardHashtag> hashtags = new HashSet<BoardHashtag>();
+    private Set<BoardHashtag> hashtags = new HashSet<>();
 
     public void addHashtag(BoardHashtag boardHashtag) {
-        this.hashtags.add(boardHashtag);
         boardHashtag.setBoard(this);
+        this.hashtags.add(boardHashtag);
     }
 
     @Builder

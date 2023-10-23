@@ -1,13 +1,10 @@
 package com.travelog.board.dto;
 
 import com.travelog.board.entity.Board;
-import com.travelog.board.entity.BoardHashtag;
-import com.travelog.board.entity.Hashtag;
 import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -19,13 +16,13 @@ public class BoardResDto {
     private String title;
     private String contents;
     private String summary;
-    private Set<BoardHashtag> hashtags;
+    private List<String> hashtags;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean status;
     private int views;
 
-    public BoardResDto(Board board, Set<BoardHashtag> hashtag){
+    public BoardResDto(Board board, List<String> hashtag){
         this.boardId = board.getBoardId();
         this.nickname = board.getNickname();
         this.local = board.getLocal();

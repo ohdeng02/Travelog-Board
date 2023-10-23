@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-@ToString(exclude = {"hashtag", "board"})
+@ToString
 @Entity
 @Table
 @Getter
@@ -23,4 +23,10 @@ public class BoardHashtag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
+
+    @Builder
+    public BoardHashtag(Board board, Hashtag hashtag){
+        this.board = board;
+        this.hashtag = hashtag;
+    }
 }

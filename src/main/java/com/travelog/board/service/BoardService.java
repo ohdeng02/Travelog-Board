@@ -36,7 +36,7 @@ public class BoardService {
     
     // 글 작성
     @Transactional
-    public Board createBoard(BoardReqDto boardReqDto){
+    public BoardResDto createBoard(BoardReqDto boardReqDto){
         Board board = Board.builder()
                 .nickname(boardReqDto.getNickname())
                 .local(boardReqDto.getLocal())
@@ -55,21 +55,31 @@ public class BoardService {
                             .hashtag(hashtag)
                             .build()));
 
-            BoardHashtag boardHashtag = new BoardHashtag();
-
-            board1.addHashtag(boardHashtag);
-            hashtag1.addBoard(boardHashtag);
+            BoardHashtag boardHashtag = new BoardHashtag(board1, hashtag1);
+            board1.getHashtags().add(boardHashtag);
+            hashtag1.getBoards().add(boardHashtag);
 
             boardHashtagRepository.save(boardHashtag);
         }
 
-        return board1;
+        return new BoardResDto(board1, boardReqDto.getHashtag());
     }
 
     // 글 삭제
     @Transactional
     public void deleteBoard(long id, String nickname){
-        boardRepository.delete(boardRepository.findByBoardIdAndNickname(id, nickname));
+        Board board = boardRepository.findByBoardIdAndNickname(id, nickname);
+        boardRepository.delete(board);
+
+        //hashtag의 boards에서 해당 게시글 삭제
+        for(BoardHashtag boardHashtag : board.getHashtags()){
+            Optional<Hashtag> hashtag = hashtagRepository.findByHashtag(boardHashtag.getHashtag().getHashtag());
+            if(hashtag.isPresent()) {
+                hashtag.get().getBoards().remove(boardHashtag);
+            } else {
+                throw new NoSuchElementException();
+            }
+        }
     }
 
     // 글 수정( 수정 필요 )
@@ -84,11 +94,15 @@ public class BoardService {
 
     // 게시글 조회(조회수 증가)
     @Transactional
-    public Board readBoard(long id, String nickname){
+    public BoardResDto readBoard(long id, String nickname){
         Board board = boardRepository.findByBoardIdAndNickname(id, nickname);
         board.updateViews(board.getViews()+1);
 
-
-        return board;
+        // 해시태그 가져오기
+        List<String> hashtag = new ArrayList<>();
+        for(BoardHashtag boardHashtag:board.getHashtags()){
+            hashtag.add(boardHashtag.getHashtag().getHashtag());
+        }
+        return new BoardResDto(board, hashtag);
     }
 }

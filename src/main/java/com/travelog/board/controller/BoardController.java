@@ -4,9 +4,7 @@ import com.travelog.board.dto.BoardReqDto;
 import com.travelog.board.dto.BoardResDto;
 import com.travelog.board.dto.PopularResInterface;
 import com.travelog.board.entity.Board;
-import com.travelog.board.entity.BoardHashtag;
 import com.travelog.board.service.BoardService;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -16,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @AllArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
@@ -34,7 +31,7 @@ public class BoardController {
 
     // 글 작성
     @PostMapping(value = "/write")
-    public ResponseEntity<Board> createdBoard(@Valid @RequestBody BoardReqDto boardReqDto){
+    public ResponseEntity<BoardResDto> createdBoard(@Valid @RequestBody BoardReqDto boardReqDto){
         return new ResponseEntity<>(boardService.createBoard(boardReqDto), HttpStatus.CREATED);
     }
 
@@ -57,7 +54,7 @@ public class BoardController {
 
     // 게시글 조회
     @GetMapping(value = "/{nickname}/{boardId}")
-    public ResponseEntity<Board> getBoard(@PathVariable String nickname, @PathVariable long boardId){
+    public ResponseEntity<BoardResDto> getBoard(@PathVariable String nickname, @PathVariable long boardId){
         return new ResponseEntity<>(boardService.readBoard(boardId, nickname), HttpStatus.OK);
     }
 }

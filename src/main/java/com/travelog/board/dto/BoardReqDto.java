@@ -1,7 +1,5 @@
 package com.travelog.board.dto;
 
-import com.travelog.board.entity.Board;
-import com.travelog.board.entity.Hashtag;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
