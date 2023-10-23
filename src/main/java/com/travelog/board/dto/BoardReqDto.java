@@ -1,6 +1,7 @@
 package com.travelog.board.dto;
 
 import com.travelog.board.entity.Schedule;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,6 +24,6 @@ public class BoardReqDto {
     
     private String summary;
     private List<Schedule> schedules;
-    private List<HashTag> hashtag;
+    //private List<HashTag> hashtag;
     private boolean status;
 }

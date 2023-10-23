@@ -5,6 +5,8 @@ import com.travelog.board.dto.CMRespDto;
 import com.travelog.board.entity.Board;
 import com.travelog.board.service.BoardService;
 import com.travelog.board.service.ScheduleService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
