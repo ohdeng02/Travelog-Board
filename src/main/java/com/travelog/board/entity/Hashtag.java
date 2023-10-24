@@ -1,7 +1,5 @@
 package com.travelog.board.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,10 +24,10 @@ public class Hashtag {
     @OneToMany(mappedBy = "hashtag", fetch = FetchType.LAZY)
     private Set<BoardHashtag> boards = new HashSet<>();
 
-    public void addBoard(BoardHashtag boardHashtag){
-        boardHashtag.setHashtag(this);
-        this.boards.add(boardHashtag);
-    }
+//    public void addBoard(BoardHashtag boardHashtag){
+//        boardHashtag.setHashtag(this);
+//        this.boards.add(boardHashtag);
+//    }
 
     @Builder
     public Hashtag(String hashtag){

@@ -1,12 +1,16 @@
 package com.travelog.board.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import com.travelog.board.entity.Schedule;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class BoardReqDto {
     @NotBlank
     private String nickname;
@@ -18,7 +22,9 @@ public class BoardReqDto {
     private String contents;
 
     private String summary;
-    private List<String> hashtag;
+    private List<Schedule> schedules;
+    private List<String> hashtags;
     private boolean status;
-
 }
+
+

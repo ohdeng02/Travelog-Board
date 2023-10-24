@@ -1,21 +1,15 @@
 package com.travelog.board.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.HashSet;
-import java.util.Set;
 
-@ToString(exclude = "hashtags")
 @Entity
 @Table
 @Getter
@@ -40,6 +34,12 @@ public class Board {
 
     private String summary;
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<Schedule> schedules = new ArrayList<>();
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<BoardHashtag> hashtags = new HashSet<>();
+
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;
@@ -48,21 +48,25 @@ public class Board {
     private boolean status;
     private int views;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<BoardHashtag> hashtags = new HashSet<>();
+//    public void addSchedule(Schedule schedule) {
+//        schedules.add(schedule);
+//        schedule.setBoard(this);
+//    }
 
-    public void addHashtag(BoardHashtag boardHashtag) {
-        boardHashtag.setBoard(this);
-        this.hashtags.add(boardHashtag);
-    }
+//    public void addHashtag(BoardHashtag boardHashtag) {
+//        boardHashtag.setBoard(this);
+//        this.hashtags.add(boardHashtag);
+//    }
 
     @Builder
-    public Board(String nickname, String local, String title, String contents, String summary, boolean status){
+    public Board(String nickname, String local, String title, String contents, String summary,
+                 List<Schedule> schedules, boolean status) {
         this.nickname = nickname;
         this.local = local;
         this.title = title;
         this.contents = contents;
         this.summary = summary;
+        this.schedules = schedules;
         this.status = status;
     }
 
