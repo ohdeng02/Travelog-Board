@@ -17,6 +17,7 @@ public class ScheduleDto {
     private String location;
     private Double latitude;
     private Double longitude;
+    private String transport;
 
     public ScheduleDto(Schedule schedule){
         id = schedule.getId();
@@ -25,5 +26,6 @@ public class ScheduleDto {
         location = schedule.getLocation();
         latitude = schedule.getLatitude();
         longitude = schedule.getLongitude();
+        transport = schedule.getTransport();
     }
 }

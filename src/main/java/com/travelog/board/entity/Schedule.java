@@ -35,18 +35,20 @@ public class Schedule {
     private Double latitude;//위도
     @Column(nullable = false)
     private Double longitude;//경도
+    private String transport;
 
     public void setBoard(Board board){
         this.board = board;
     }
 
     @Builder
-    public Schedule (Board board, LocalDate date, String location, Double latitude, Double longitude) {
+    public Schedule (Board board, LocalDate date, String location, Double latitude, Double longitude, String transport) {
         this.board = board;
         this.date = date;
         this.location = location;
         this.latitude = latitude;
         this.longitude = longitude;
+        this.transport = transport;
     }
 
 }

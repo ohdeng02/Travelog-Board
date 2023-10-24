@@ -32,16 +32,17 @@ public class BoardResDto {
     private int views;
 
      public BoardResDto (Board board){
-         boardId = board.getBoardId();
-         nickname = board.getNickname();
+         this.boardId = board.getBoardId();
+         this.nickname = board.getNickname();
          //schedules = board.getSchedules();
-         local = board.getLocal();
-         title = board.getTitle();
-         contents = board.getContents();
-         summary = board.getSummary();
-         createdAt = board.getCreatedAt();
-         updatedAt = board.getUpdatedAt();
-         views = board.getViews();
+         this.local = board.getLocal();
+         this.title = board.getTitle();
+         this.contents = board.getContents();
+         this.summary = board.getSummary();
+         this.createdAt = board.getCreatedAt();
+         this.updatedAt = board.getUpdatedAt();
+         this.views = board.getViews();
+
      }
 
     public BoardResDto(Board board, List<String> hashtag){

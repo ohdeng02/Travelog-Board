@@ -46,8 +46,8 @@ public class BoardController {
     }
 
     //지역별 게시글 검색 OK
-    @GetMapping(value = "/localSearch")
-    public ResponseEntity<?> getLocalSearch(@RequestParam(name = "q")String local){
+    @GetMapping(value = "/local/{local}")
+    public ResponseEntity<?> getLocalSearch(@PathVariable String local){
         List<BoardResDto> dtos = boardService.getLocalSearch(local);
         return new ResponseEntity<>(CMRespDto.builder()
                 .isSuccess(true).msg("지역별 검색 목록이 조회되었습니다.").body(dtos).build(), HttpStatus.OK);

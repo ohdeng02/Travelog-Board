@@ -21,6 +21,7 @@ import java.util.Set;
 @Table
 @Getter
 @NoArgsConstructor
+@EntityListeners(AuditingEntityListener.class)
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -72,7 +73,6 @@ public class Board {
         this.contents = contents;
         this.summary = summary;
         this.schedules = schedules;
-        this.createdAt = LocalDateTime.now();
         this.status = status;
     }
 
