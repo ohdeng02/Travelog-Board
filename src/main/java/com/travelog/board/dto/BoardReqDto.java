@@ -5,13 +5,14 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
+import com.travelog.board.entity.Board;
+import com.travelog.board.entity.Hashtag;
+
 import java.util.List;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class BoardReqDto {
     @NotBlank
     private String nickname;
@@ -24,6 +25,6 @@ public class BoardReqDto {
     
     private String summary;
     private List<Schedule> schedules;
-    //private List<HashTag> hashtag;
+    private List<String> hashtag;
     private boolean status;
 }
