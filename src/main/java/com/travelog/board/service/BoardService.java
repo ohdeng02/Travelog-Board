@@ -1,8 +1,8 @@
 package com.travelog.board.service;
 
+import com.travelog.board.dto.BoardListResDto;
 import com.travelog.board.dto.BoardReqDto;
 import com.travelog.board.dto.BoardResDto;
-import com.travelog.board.dto.PopularResInterface;
 import com.travelog.board.entity.Board;
 import com.travelog.board.entity.BoardHashtag;
 import com.travelog.board.entity.Hashtag;
@@ -29,24 +29,41 @@ public class BoardService {
 
     // 인기글 조회
     @Transactional(readOnly = true)
-    public List<PopularResInterface> getPopular(){
-        return boardRepository.findPopular();
+    public List<BoardListResDto> getPopular(){
+        List<Board> boards = boardRepository.findPopular();
+        List<String> hashtags;
+        List<BoardListResDto> boardList = new ArrayList<>();
+        for (Board board: boards){
+            hashtags = boardHashtagRepository.findAllHashtag(board.getBoardId());
+            boardList.add(new BoardListResDto(board, hashtags));
+        }
+        return boardList;
     }
 
     //블로그 게시글 목록 조회
     @Transactional(readOnly = true)
-    public List<BoardResDto> getBlogHome(String nickname){
+    public List<BoardListResDto> getBlogHome(String nickname){
         List<Board> boards = boardRepository.findAllByName(nickname);
-        return boards.stream()
-                .map(BoardResDto::new).collect(Collectors.toList());
+        List<String> hashtags;
+        List<BoardListResDto> boardList = new ArrayList<>();
+        for (Board board: boards){
+            hashtags = boardHashtagRepository.findAllHashtag(board.getBoardId());
+            boardList.add(new BoardListResDto(board, hashtags));
+        }
+        return boardList;
     }
 
     //지역별 게시글 목록 조회
     @Transactional(readOnly = true)
-    public List<BoardResDto> getLocalSearch(String local) {
+    public List<BoardListResDto> getLocalSearch(String local) {
         List<Board> boards = boardRepository.findAllByLocal(local);
-        return boards.stream()
-                .map(BoardResDto::new).collect(Collectors.toList());
+        List<String> hashtags;
+        List<BoardListResDto> boardList = new ArrayList<>();
+        for (Board board: boards){
+            hashtags = boardHashtagRepository.findAllHashtag(board.getBoardId());
+            boardList.add(new BoardListResDto(board, hashtags));
+        }
+        return boardList;
     }
 
     // 게시글 조회(조회수 증가)
@@ -54,16 +71,17 @@ public class BoardService {
     public BoardResDto readBoard(long id, String nickname){
         Board board = boardRepository.findByBoardIdAndNickname(id, nickname);
         board.updateViews(board.getViews()+1);
-        List<String> hashtags = new ArrayList<>();
-        for(BoardHashtag hashtag: board.getHashtags()){
-            hashtags.add(hashtag.getHashtag().getHashtag());
-        } //성능에 문제를 발생시키지 않을까?
-        return new BoardResDto(board, hashtags);
+        // 해시태그 가져오기
+        List<String> hashtag = new ArrayList<>();
+        for(BoardHashtag boardHashtag:board.getHashtags()){
+            hashtag.add(boardHashtag.getHashtag().getHashtag());
+        }
+        return new BoardResDto(board, hashtag);
     }
     
     // 글 작성 (db 접근이 조금 많이 이루어지는 것 같아 간추려지면 더 좋을 것 같습니당)
     @Transactional
-    public Board createBoard(BoardReqDto boardReqDto){
+    public Board createBoard(BoardReqDto boardReqDto) {
         Board board = Board.builder()
                 .nickname(boardReqDto.getNickname())
                 .local(boardReqDto.getLocal())
@@ -77,16 +95,15 @@ public class BoardService {
 
         // hashtag 테이블에 검색 후 없으면 저장
         // board_hashtag 테이블에 보드 아이디, 해시태그 아이디 저장
-        for (String hashtag: boardReqDto.getHashtag()){
+        for (String hashtag : boardReqDto.getHashtags()) {
             Hashtag hashtag1 = hashtagRepository.findByHashtag(hashtag)
-                    .orElseGet(()-> hashtagRepository.save(Hashtag.builder()
+                    .orElseGet(() -> hashtagRepository.save(Hashtag.builder()
                             .hashtag(hashtag)
                             .build()));
 
-            BoardHashtag boardHashtag = new BoardHashtag();
-
-            board1.addHashtag(boardHashtag);
-            hashtag1.addBoard(boardHashtag);
+            BoardHashtag boardHashtag = new BoardHashtag(board1, hashtag1);
+            board1.getHashtags().add(boardHashtag);
+            hashtag1.getBoards().add(boardHashtag);
 
             boardHashtagRepository.save(boardHashtag);
         }

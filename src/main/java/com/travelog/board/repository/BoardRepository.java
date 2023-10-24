@@ -1,6 +1,5 @@
 package com.travelog.board.repository;
 
-import com.travelog.board.dto.PopularResInterface;
 import com.travelog.board.entity.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,8 +16,8 @@ public interface BoardRepository  extends JpaRepository<Board, Long> {
     @Query(value = "select * from board b where b.local = :local", nativeQuery = true)
     List<Board> findAllByLocal(@Param("local")String local);
 
-    @Query(value = "select board_id as boardId, nickname, local, title, contents, summary from board order by views desc limit 10", nativeQuery = true)
-    List<PopularResInterface> findPopular();
+    @Query(value = "select * from board where status = true order by views desc limit 10", nativeQuery = true)
+    List<Board> findPopular();
 
     Board findByBoardIdAndNickname(long board_id, String nickname);
 }

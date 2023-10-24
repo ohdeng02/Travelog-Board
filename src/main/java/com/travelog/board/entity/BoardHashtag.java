@@ -1,13 +1,10 @@
 package com.travelog.board.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-@ToString
 @Entity
 @Table
 @Getter
@@ -26,4 +23,10 @@ public class BoardHashtag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
+
+    @Builder
+    public BoardHashtag(Board board, Hashtag hashtag){
+        this.board = board;
+        this.hashtag = hashtag;
+    }
 }

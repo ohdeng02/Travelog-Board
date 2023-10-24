@@ -1,21 +1,14 @@
 package com.travelog.board.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import java.util.List;
-import java.util.ArrayList;
-import lombok.ToString;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table
@@ -45,7 +38,7 @@ public class Board {
     private List<Schedule> schedules = new ArrayList<>();
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<BoardHashtag> hashtags = new HashSet<BoardHashtag>();
+    private Set<BoardHashtag> hashtags = new HashSet<>();
 
     @CreatedDate
     @Column(updatable = false)
@@ -60,13 +53,14 @@ public class Board {
 //        schedule.setBoard(this);
 //    }
 
-    public void addHashtag(BoardHashtag boardHashtag) {
-        this.hashtags.add(boardHashtag);
-        boardHashtag.setBoard(this);
-    }
+//    public void addHashtag(BoardHashtag boardHashtag) {
+//        boardHashtag.setBoard(this);
+//        this.hashtags.add(boardHashtag);
+//    }
 
     @Builder
-    public Board(String nickname, String local, String title, String contents, String summary, List<Schedule> schedules, boolean status){
+    public Board(String nickname, String local, String title, String contents, String summary,
+                 List<Schedule> schedules, boolean status) {
         this.nickname = nickname;
         this.local = local;
         this.title = title;

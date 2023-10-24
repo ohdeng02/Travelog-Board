@@ -1,16 +1,14 @@
 package com.travelog.board.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
+@ToString(exclude = "boards")
 @Entity
 @Table
 @Getter
@@ -24,12 +22,12 @@ public class Hashtag {
     private String hashtag;
 
     @OneToMany(mappedBy = "hashtag", fetch = FetchType.LAZY)
-    private Set<BoardHashtag> boards = new HashSet<BoardHashtag>();
+    private Set<BoardHashtag> boards = new HashSet<>();
 
-    public void addBoard(BoardHashtag boardHashtag){
-        this.boards.add(boardHashtag);
-        boardHashtag.setHashtag(this);
-    }
+//    public void addBoard(BoardHashtag boardHashtag){
+//        boardHashtag.setHashtag(this);
+//        this.boards.add(boardHashtag);
+//    }
 
     @Builder
     public Hashtag(String hashtag){
