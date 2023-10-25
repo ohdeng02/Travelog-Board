@@ -65,7 +65,7 @@ public class BoardController {
 
     //글 생성 + 일정 생성
     @PostMapping(value = "/write")
-    public ResponseEntity<?> createSchedule(@Valid @RequestBody BoardReqDto boardReqDto){
+    public ResponseEntity<?> createdBoard(@Valid @RequestBody BoardReqDto boardReqDto){
         Board res = boardService.createBoard(boardReqDto);
         scheduleService.connectSchedule(res);
         return new ResponseEntity<>(CMRespDto.builder().isSuccess(true).msg("게시물 저장완료")
