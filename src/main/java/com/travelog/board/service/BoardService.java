@@ -42,18 +42,28 @@ public class BoardService {
 
     //블로그 게시글 목록 조회
     @Transactional(readOnly = true)
-    public List<BoardResDto> getBlogHome(String nickname){
+    public List<BoardListResDto> getBlogHome(String nickname){
         List<Board> boards = boardRepository.findAllByName(nickname);
-        return boards.stream()
-                .map(BoardResDto::new).collect(Collectors.toList());
+        List<String> hashtags;
+        List<BoardListResDto> boardList = new ArrayList<>();
+        for (Board board: boards){
+            hashtags = boardHashtagRepository.findAllHashtag(board.getBoardId());
+            boardList.add(new BoardListResDto(board, hashtags));
+        }
+        return boardList;
     }
 
-    //지역별 게시글 조회
+    //지역별 게시글 목록 조회
     @Transactional(readOnly = true)
-    public List<BoardResDto> getLocalSearch(String local) {
+    public List<BoardListResDto> getLocalSearch(String local) {
         List<Board> boards = boardRepository.findAllByLocal(local);
-        return boards.stream()
-                .map(BoardResDto::new).collect(Collectors.toList());
+        List<String> hashtags;
+        List<BoardListResDto> boardList = new ArrayList<>();
+        for (Board board: boards){
+            hashtags = boardHashtagRepository.findAllHashtag(board.getBoardId());
+            boardList.add(new BoardListResDto(board, hashtags));
+        }
+        return boardList;
     }
 
     // 게시글 조회(조회수 증가)
@@ -61,7 +71,6 @@ public class BoardService {
     public BoardResDto readBoard(long id, String nickname){
         Board board = boardRepository.findByBoardIdAndNickname(id, nickname);
         board.updateViews(board.getViews()+1);
-
         // 해시태그 가져오기
         List<String> hashtag = new ArrayList<>();
         for(BoardHashtag boardHashtag:board.getHashtags()){
@@ -70,7 +79,7 @@ public class BoardService {
         return new BoardResDto(board, hashtag);
     }
     
-    // 글 작성
+    // 글 작성 (db 접근이 조금 많이 이루어지는 것 같아 간추려지면 더 좋을 것 같습니당)
     @Transactional
     public Board createBoard(BoardReqDto boardReqDto) {
         Board board = Board.builder()

@@ -2,6 +2,8 @@ package com.travelog.board.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table
@@ -15,6 +17,7 @@ public class BoardHashtag {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "hashtag_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Hashtag hashtag;
 
     @ManyToOne(fetch = FetchType.LAZY)

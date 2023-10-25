@@ -5,6 +5,9 @@ import com.travelog.board.entity.Schedule;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
+import com.travelog.board.entity.Board;
+import com.travelog.board.entity.Hashtag;
 
 import java.util.List;
 

@@ -19,4 +19,5 @@ public class ScheduleReqDto {
     private Double latitude;
     @NotBlank
     private Double longitude;
+    private String transport;
 }

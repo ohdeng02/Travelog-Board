@@ -19,12 +19,5 @@ public class ScheduleController {
     @Autowired
     private final ScheduleService scheduleService;
 
-    //일정 삭제
-    @DeleteMapping("/board/delete/{scheduleId}")
-    public ResponseEntity<?> deleteSchedule(@PathVariable("scheduleId")Long scheduleId){
-        scheduleService.deleteSchedule(scheduleId);
-        return new ResponseEntity<>(CMRespDto.builder()
-                .isSuccess(true).msg("일정이 삭제되었습니다.").body("").build(), HttpStatus.OK);
-    }
 
 }

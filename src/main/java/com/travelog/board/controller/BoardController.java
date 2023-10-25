@@ -37,12 +37,12 @@ public class BoardController {
                 .isSuccess(true).msg("인기글 10개 조회").body(dtos).build(),HttpStatus.OK);
     }
 
-    //블로그 게시글 목록 조회
+    //블로그 게시글 목록 조회 OK
     @Tag(name = "블로그 홈 조회")
     @Operation(summary = "개인 홈 조회", description = "nickname을 이용해 board 목록을 조회합니다.")
     @GetMapping(value = "/{nickname}")
     public ResponseEntity<?> getBlogHome(@PathVariable String nickname){
-        List<BoardResDto> dtos = boardService.getBlogHome(nickname);
+        List<BoardListResDto> dtos = boardService.getBlogHome(nickname);
         return new ResponseEntity<>(CMRespDto.builder()
                 .isSuccess(true).msg("블로그 게시글 목록이 조회되었습니다.").body(dtos).build(), HttpStatus.OK);
     }
@@ -50,12 +50,12 @@ public class BoardController {
     //지역별 게시글 검색
     @GetMapping(value = "/local/{local}")
     public ResponseEntity<?> getLocalSearch(@PathVariable String local){
-        List<BoardResDto> dtos = boardService.getLocalSearch(local);
+        List<BoardListResDto> dtos = boardService.getLocalSearch(local);
         return new ResponseEntity<>(CMRespDto.builder()
                 .isSuccess(true).msg("지역별 검색 목록이 조회되었습니다.").body(dtos).build(), HttpStatus.OK);
     }
 
-    //글 조회
+    // 글 조회 OK
     @GetMapping(value = "/{nickname}/{boardId}")
     public ResponseEntity<?> getBoard(@PathVariable String nickname, @PathVariable Long boardId){
         BoardResDto board =  boardService.readBoard(boardId, nickname);
@@ -63,19 +63,19 @@ public class BoardController {
                 .isSuccess(true).msg("게시글이 조회되었습니다.").body(board).build(), HttpStatus.OK);
     }
 
-    //글 생성 + 일정 생성
+    //글 생성 + 일정 생성 OK
     @PostMapping(value = "/write")
-    public ResponseEntity<?> createdBoard(@Valid @RequestBody BoardReqDto boardReqDto){
+    public ResponseEntity<?> createBoard(@Valid @RequestBody BoardReqDto boardReqDto){
         Board res = boardService.createBoard(boardReqDto);
         scheduleService.connectSchedule(res);
         return new ResponseEntity<>(CMRespDto.builder().isSuccess(true).msg("게시물 저장완료")
                 .body("board_id: "+res.getBoardId()).build(), HttpStatus.OK);
     }
 
-    // 글 삭제
+    // 글 삭제 OK
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping(value = "/{nickname}/{boardId}")
-    public String deleteBoard(HttpServletRequest request, @PathVariable String nickname, @PathVariable long boardId){
+    public String deleteBoard(HttpServletRequest request, @PathVariable String nickname, @PathVariable Long boardId){
         boardService.deleteBoard(boardId, nickname);
         String referer = request.getHeader("Referer");
         if(referer == null){
@@ -86,7 +86,7 @@ public class BoardController {
 
     // 글 수정
     @PutMapping(value = "/write/{boardId}")
-    public Board updateBoard(@PathVariable long boardId, @RequestBody Board board){
+    public Board updateBoard(@PathVariable Long boardId, @RequestBody Board board){
         return boardService.upadateBoard(boardId, board);
     }
 }

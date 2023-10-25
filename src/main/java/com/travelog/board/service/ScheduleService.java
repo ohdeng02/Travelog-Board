@@ -30,9 +30,10 @@ public class ScheduleService {
         }
     }
 
-    //일정 삭제
-    @Transactional
-    public void deleteSchedule(Long scheduleId){
-        scheduleRepository.deleteById(scheduleId);
-    }
+    //일정 수정
+//    @Transactional
+//    public void updateSchedule(Long scheduleId, Date date, String location,
+//                               Double latitude, Double longitude){
+//        //Schedule schedule = ScheduleRepository.findOne(scheduleId);
+//    }
 }
