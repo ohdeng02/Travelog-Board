@@ -34,7 +34,7 @@ logging:
 #                SQL: debug
             springframework:
                 orm:
-                    jpa: debug
+                    jpa: DEBUG
                     jpa.JpaTransactionManager: DEBUG
 
 springdoc:

@@ -55,6 +55,14 @@ public class BoardController {
                 .isSuccess(true).msg("지역별 검색 목록이 조회되었습니다.").body(dtos).build(), HttpStatus.OK);
     }
 
+    // 글 검색
+    @GetMapping(value = "/search/{query}")
+    public ResponseEntity<?> getSearch(@PathVariable String query){
+        List<BoardListResDto> dtos = boardService.getSearch(query);
+        return new ResponseEntity<>(CMRespDto.builder()
+                .isSuccess(true).msg("검색이 완료되었습니다.").body(dtos).build(), HttpStatus.OK);
+    }
+
     // 글 조회 OK
     @GetMapping(value = "/{nickname}/{boardId}")
     public ResponseEntity<?> getBoard(@PathVariable String nickname, @PathVariable Long boardId){

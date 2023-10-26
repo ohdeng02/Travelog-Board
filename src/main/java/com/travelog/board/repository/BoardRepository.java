@@ -19,5 +19,8 @@ public interface BoardRepository  extends JpaRepository<Board, Long> {
     @Query(value = "select * from board where status = true order by views desc limit 10", nativeQuery = true)
     List<Board> findPopular();
 
-    Board findByBoardIdAndNickname(long board_id, String nickname);
+    Board findByBoardIdAndNickname(Long board_id, String nickname);
+
+    @Query(value = "select * from board where title LIKE %:query% OR contents LIKE %:query%", nativeQuery = true)
+    List<Board> findByTitleOrContentsContaining(@Param("query") String query);
 }
