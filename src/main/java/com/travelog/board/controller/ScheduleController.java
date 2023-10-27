@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping(value = "/")
+@RequestMapping(value = "/board/")
 public class ScheduleController {
     @Autowired
     private final ScheduleService scheduleService;

@@ -22,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/")
+@RequestMapping("/board/")
 public class BoardController {
     @Autowired
     private final BoardService boardService;
