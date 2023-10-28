@@ -1,8 +1,9 @@
 server:
-    address: 0.0.0.0
-    port: 8080
+    port: 8082
 
 spring:
+    application:
+        name: board
     datasource:
         driver-class-name: org.mariadb.jdbc.Driver
         url: jdbc:mariadb://172.16.210.130:3306/Board
@@ -26,6 +27,19 @@ spring:
             hibernate:
                 format_sql: true
                 #default_batch_fetch_size: 50
+
+eureka:
+    instance:
+        instance-id: board-service
+        prefer-ip-address: true
+        lease-renewal-interval-in-seconds: 30
+        client:
+            registerWithEureka: true
+            fetchRegistry: true
+            serviceUrl:
+                defaultZone: http://172.16.210.131:8761/eureka/
+            instance:
+                hostname: localhost
 
 logging:
     level:

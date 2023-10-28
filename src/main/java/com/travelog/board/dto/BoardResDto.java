@@ -6,11 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import com.travelog.board.entity.BoardHashtag;
-import com.travelog.board.entity.Hashtag;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -30,19 +28,32 @@ public class BoardResDto {
     private boolean status;
     private int views;
 
-    public BoardResDto(Board board, List<String> hashtag){
+    // public BoardResDto (Board board){
+    //     this.boardId = board.getBoardId();
+    //     this.nickname = board.getNickname();
+    //      //schedules = board.getSchedules();
+    //     this.local = board.getLocal();
+    //     this.title = board.getTitle();
+    //     this.contents = board.getContents();
+    //     this.summary = board.getSummary();
+    //     this.createdAt = board.getCreatedAt();
+    //     this.updatedAt = board.getUpdatedAt();
+    //     this.views = board.getViews();
+
+    // }
+
+    public BoardResDto(Board board){
         this.boardId = board.getBoardId();
         this.nickname = board.getNickname();
         this.local = board.getLocal();
         this.title = board.getTitle();
         this.contents = board.getContents();
         this.summary = board.getSummary();
-        this.schedules = board.getSchedules();
         this.createdAt = board.getCreatedAt();
         this.updatedAt = board.getUpdatedAt();
         this.status = board.isStatus();
         this.views = board.getViews();
         this.schedules = board.getSchedules();
-        this.hashtags = hashtag;
+        this.hashtags = board.getHashtags().stream().map(o->o.getHashtag().getHashtag()).collect(Collectors.toList());
     }
 }
