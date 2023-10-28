@@ -1,5 +1,4 @@
 server:
-    address: 0.0.0.0
     port: 8082
 
 spring:
@@ -31,6 +30,7 @@ spring:
 
 eureka:
     instance:
+        instance-id: board-service
         prefer-ip-address: true
         lease-renewal-interval-in-seconds: 30
         client:
@@ -38,7 +38,8 @@ eureka:
             fetchRegistry: true
             serviceUrl:
                 defaultZone: http://172.16.210.131:8761/eureka/
-
+            instance:
+                hostname: localhost
 
 logging:
     level:
@@ -47,7 +48,7 @@ logging:
 #                SQL: debug
             springframework:
                 orm:
-                    jpa: debug
+                    jpa: DEBUG
                     jpa.JpaTransactionManager: DEBUG
 
 springdoc:

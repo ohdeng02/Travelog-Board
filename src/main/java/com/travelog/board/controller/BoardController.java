@@ -22,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
-@RequestMapping("/board/")
+@RequestMapping("/board")
 public class BoardController {
     @Autowired
     private final BoardService boardService;
@@ -47,12 +47,20 @@ public class BoardController {
                 .isSuccess(true).msg("블로그 게시글 목록이 조회되었습니다.").body(dtos).build(), HttpStatus.OK);
     }
 
-    //지역별 게시글 검색
+    //지역별 게시글 조회
     @GetMapping(value = "/local/{local}")
     public ResponseEntity<?> getLocalSearch(@PathVariable String local){
         List<BoardListResDto> dtos = boardService.getLocalSearch(local);
         return new ResponseEntity<>(CMRespDto.builder()
                 .isSuccess(true).msg("지역별 검색 목록이 조회되었습니다.").body(dtos).build(), HttpStatus.OK);
+    }
+
+    // 글 검색
+    @GetMapping(value = "/search/{query}")
+    public ResponseEntity<?> getSearch(@PathVariable String query){
+        List<BoardListResDto> dtos = boardService.getSearch(query);
+        return new ResponseEntity<>(CMRespDto.builder()
+                .isSuccess(true).msg("검색이 완료되었습니다.").body(dtos).build(), HttpStatus.OK);
     }
 
     // 글 조회 OK
@@ -69,7 +77,7 @@ public class BoardController {
         Board res = boardService.createBoard(boardReqDto);
         scheduleService.connectSchedule(res);
         return new ResponseEntity<>(CMRespDto.builder().isSuccess(true).msg("게시물 저장완료")
-                .body("board_id: "+res.getBoardId()).build(), HttpStatus.OK);
+                .body(res.getBoardId()).build(), HttpStatus.OK);
     }
 
     // 글 삭제 OK

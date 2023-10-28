@@ -67,10 +67,24 @@ public class BoardService {
 //        return boardList;
     }
 
+    //글 검색
+    @Transactional(readOnly = true)
+    public List<BoardListResDto> getSearch(String query){
+        return boardRepository.findByTitleOrContentsContaining(query);
+//        List<String> hashtags;
+//        List<BoardListResDto> boardList = new ArrayList<>();
+//        for (Board board: boards){
+//            hashtags = boardHashtagRepository.findAllHashtag(board.getBoardId());
+//            boardList.add(new BoardListResDto(board, hashtags));
+//        }
+//        return boardList;
+    }
+
     // 게시글 조회(조회수 증가)
     @Transactional
     public BoardResDto readBoard(long id, String nickname){
         Board board = boardRepository.findByBoardIdAndNickname(id, nickname);
+        System.out.println(board);
         board.updateViews(board.getViews()+1);
         // 해시태그 가져오기
 //        List<String> hashtag = new ArrayList<>();
