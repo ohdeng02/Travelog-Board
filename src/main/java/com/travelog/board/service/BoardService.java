@@ -97,7 +97,7 @@ public class BoardService {
 //        }
         List<Comment> comments = null;
         try{
-            comments = commentServiceFeignClient.getComments(nickname, id);
+            comments = commentServiceFeignClient.getComments(id);
         } catch (FeignException e){
             System.out.println(e.getMessage());
         }

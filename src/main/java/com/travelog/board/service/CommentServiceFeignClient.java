@@ -11,6 +11,6 @@ import java.util.List;
 
 @FeignClient("comments")
 public interface CommentServiceFeignClient {
-    @GetMapping(value = "/comments/{nickname}/{boardId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    List<Comment> getComments(@PathVariable String nickname, Long boardId);
+    @GetMapping(value = "/comments/{boardId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    List<Comment> getComments(@PathVariable Long boardId);
 }
