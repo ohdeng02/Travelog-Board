@@ -5,10 +5,12 @@ import com.travelog.board.dto.BoardReqDto;
 import com.travelog.board.dto.BoardResDto;
 import com.travelog.board.entity.Board;
 import com.travelog.board.entity.BoardHashtag;
+import com.travelog.board.entity.Comment;
 import com.travelog.board.entity.Hashtag;
 import com.travelog.board.repository.BoardHashtagRepository;
 import com.travelog.board.repository.BoardRepository;
 import com.travelog.board.repository.HashtagRepository;
+import feign.FeignException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,8 @@ public class BoardService {
     private final HashtagRepository hashtagRepository;
     @Autowired
     private final BoardHashtagRepository boardHashtagRepository;
+    @Autowired
+    private final CommentServiceFeignClient commentServiceFeignClient;
 
     // 인기글 조회
     @Transactional(readOnly = true)
@@ -91,7 +95,13 @@ public class BoardService {
 //        for(BoardHashtag boardHashtag:board.getHashtags()){
 //            hashtag.add(boardHashtag.getHashtag().getHashtag());
 //        }
-        return new BoardResDto(board);
+        List<Comment> comments = null;
+        try{
+            comments = commentServiceFeignClient.getComments(nickname, id);
+        } catch (FeignException e){
+            System.out.println(e.getMessage());
+        }
+        return new BoardResDto(board, comments);
     }
 
     // 글 작성 (db 접근이 조금 많이 이루어지는 것 같아 간추려지면 더 좋을 것 같습니당)

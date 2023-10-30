@@ -31,6 +31,7 @@ public class Board {
     private String title;
 
     @Column(nullable = false)
+    @Lob
     private String contents;
 
     private String summary;
@@ -40,6 +41,9 @@ public class Board {
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Set<BoardHashtag> hashtags = new HashSet<>();
+
+//    @Transient
+//    List<Comment> comments;
 
     @CreatedDate
     @Column(updatable = false)
@@ -82,4 +86,6 @@ public class Board {
     public void updateViews(int views){
         this.views = views;
     }
+
+    //public void setComments(List<Comment> comments) {this.comments = comments;}
 }
