@@ -42,9 +42,6 @@ public class Board {
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     private Set<BoardHashtag> hashtags = new HashSet<>();
 
-//    @Transient
-//    List<Comment> comments;
-
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdAt;

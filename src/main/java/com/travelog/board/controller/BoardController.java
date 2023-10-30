@@ -4,8 +4,10 @@ import com.travelog.board.dto.BoardListResDto;
 import com.travelog.board.dto.BoardReqDto;
 import com.travelog.board.dto.BoardResDto;
 import com.travelog.board.entity.Board;
+import com.travelog.board.entity.Comment;
 import com.travelog.board.service.BoardService;
 import com.travelog.board.dto.CMRespDto;
+import com.travelog.board.service.CommentServiceFeignClient;
 import com.travelog.board.service.ScheduleService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -28,6 +30,7 @@ public class BoardController {
     private final BoardService boardService;
     @Autowired
     private final ScheduleService scheduleService;
+    private final CommentServiceFeignClient commentServiceFeignClient;
 
     // 인기글 조회
     @GetMapping(value = "/")
@@ -67,6 +70,7 @@ public class BoardController {
     @GetMapping(value = "/{nickname}/{boardId}")
     public ResponseEntity<?> getBoard(@PathVariable String nickname, @PathVariable Long boardId){
         BoardResDto board =  boardService.readBoard(boardId, nickname);
+        List<Comment> comments = commentServiceFeignClient.getComments(nickname, boardId);
         return new ResponseEntity<>(CMRespDto.builder()
                 .isSuccess(true).msg("게시글이 조회되었습니다.").body(board).build(), HttpStatus.OK);
     }
