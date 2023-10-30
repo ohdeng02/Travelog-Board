@@ -30,22 +30,18 @@ spring:
 
 eureka:
     instance:
-        instance-id: board-service
-        prefer-ip-address: true
+        prefer-ip-address: false
         lease-renewal-interval-in-seconds: 30
-        client:
-            registerWithEureka: true
-            fetchRegistry: true
-            serviceUrl:
-                defaultZone: http://172.16.210.131:8761/eureka/
-            instance:
-                hostname: localhost
+    client:
+        register-with-eureka: true
+        fetch-registry: true
+        service-url:
+            defaultZone: http://172.16.210.130:8761/eureka/
+
 
 logging:
     level:
         org:
-#            hibernate:
-#                SQL: debug
             springframework:
                 orm:
                     jpa: DEBUG
