@@ -36,7 +36,7 @@ eureka:
         register-with-eureka: true
         fetch-registry: true
         service-url:
-            defaultZone: http://172.16.210.130:8761/eureka/
+            defaultZone: ${EUREKA_SERVER_URI:http://172.16.210.131:8761/eureka/}
 
 
 logging:
@@ -52,3 +52,9 @@ springdoc:
         path: /swagger-ui/index.html
         operationsSorter: method
         tagsSorter: alpha
+
+management:
+    endpoints:
+        web:
+            exposure:
+                include: ["env", "refresh"]

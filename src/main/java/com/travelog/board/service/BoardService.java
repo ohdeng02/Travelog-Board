@@ -28,6 +28,7 @@ public class BoardService {
     private final HashtagRepository hashtagRepository;
     @Autowired
     private final BoardHashtagRepository boardHashtagRepository;
+
     @Autowired
     private final CommentServiceFeignClient commentServiceFeignClient;
 
@@ -86,7 +87,7 @@ public class BoardService {
 
     // 게시글 조회(조회수 증가)
     @Transactional
-    public BoardResDto readBoard(long id, String nickname){
+    public BoardResDto readBoard(long id, String nickname, List<Comment> comments){
         Board board = boardRepository.findByBoardIdAndNickname(id, nickname);
         System.out.println(board);
         board.updateViews(board.getViews()+1);
@@ -95,12 +96,13 @@ public class BoardService {
 //        for(BoardHashtag boardHashtag:board.getHashtags()){
 //            hashtag.add(boardHashtag.getHashtag().getHashtag());
 //        }
-        List<Comment> comments = null;
-        try{
-            comments = commentServiceFeignClient.getComments(nickname, id);
-        } catch (FeignException e){
-            System.out.println(e.getMessage());
-        }
+//        List<Comment> comments = null;
+//        try{
+//            comments = commentServiceFeignClient.getComments(id);
+//        } catch (FeignException e){
+//            System.out.println(e.getMessage());
+//        }
+//        return new BoardResDto(board, comments);
         return new BoardResDto(board, comments);
     }
 

@@ -13,7 +13,7 @@ import java.util.List;
 
 @FeignClient(name = "comments")
 public interface CommentServiceFeignClient {
-    @RequestMapping(method = RequestMethod.GET, value = "/comments/{nickname}/{boardId}",
-            consumes = MediaType.APPLICATION_JSON_VALUE)
-    List<Comment> getComments(@PathVariable("nickname") String nickname, @PathVariable("boardId") Long boardId);
+    @RequestMapping(method = RequestMethod.GET, value = "/comments/{boardId}", consumes = "application/json")
+    List<Comment> getComments(@PathVariable Long boardId);
+
 }

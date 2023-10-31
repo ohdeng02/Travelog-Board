@@ -9,6 +9,7 @@ import com.travelog.board.service.BoardService;
 import com.travelog.board.dto.CMRespDto;
 import com.travelog.board.service.CommentServiceFeignClient;
 import com.travelog.board.service.ScheduleService;
+import feign.FeignException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @AllArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://172.16.210.130:3000", allowedHeaders = "*", allowCredentials = "true")
 @RestController
 @RequestMapping("/board")
 public class BoardController {
@@ -30,6 +31,7 @@ public class BoardController {
     private final BoardService boardService;
     @Autowired
     private final ScheduleService scheduleService;
+    @Autowired
     private final CommentServiceFeignClient commentServiceFeignClient;
 
     // 인기글 조회
@@ -69,8 +71,13 @@ public class BoardController {
     // 글 조회 OK
     @GetMapping(value = "/{nickname}/{boardId}")
     public ResponseEntity<?> getBoard(@PathVariable String nickname, @PathVariable Long boardId){
-        BoardResDto board =  boardService.readBoard(boardId, nickname);
-        List<Comment> comments = commentServiceFeignClient.getComments(nickname, boardId);
+        List<Comment> comments = null;
+        try{
+            comments = commentServiceFeignClient.getComments(boardId);
+        } catch (FeignException e){
+            System.out.println(e.getMessage());
+        }
+        BoardResDto board =  boardService.readBoard(boardId, nickname, comments);
         return new ResponseEntity<>(CMRespDto.builder()
                 .isSuccess(true).msg("게시글이 조회되었습니다.").body(board).build(), HttpStatus.OK);
     }
