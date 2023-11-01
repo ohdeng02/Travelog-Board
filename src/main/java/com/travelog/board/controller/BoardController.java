@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @AllArgsConstructor
-@CrossOrigin(origins = "http://172.16.210.130:3000", allowedHeaders = "*", allowCredentials = "true")
 @RestController
 @RequestMapping("/board")
 public class BoardController {
@@ -35,7 +34,7 @@ public class BoardController {
     private final CommentServiceFeignClient commentServiceFeignClient;
 
     // 인기글 조회
-    @GetMapping(value = "/")
+    @GetMapping
     public ResponseEntity<?> getPopular(){
         List<BoardListResDto> dtos = boardService.getPopular();
         return new ResponseEntity<>(CMRespDto.builder()
