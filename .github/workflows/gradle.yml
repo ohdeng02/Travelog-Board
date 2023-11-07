@@ -1,0 +1,76 @@
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ "main" ] # main브랜치에 푸시되었을 때 실행
+  pull_request:
+    branches: [ "main" ] # main브랜치에 pr이 발생했을 때 실행
+
+permissions:
+  contents: read
+
+jobs:
+# Spring Boot 애플리케이션을 빌드하여 도커허브에 푸시하는 과정 
+  build-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    # 1. Java 17 세팅
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+
+    # 권한 부여
+    - name: Grant execute permission for gradlew
+      run: chmod +x ./gradlew
+      shell: bash
+      
+    # 2. Spring Boot 애플리케이션 빌드
+    - name: Build with Gradle
+      # uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
+      # with:
+      #   arguments: clean bootJar
+      run: ./gradlew bootJar
+      shell: bash
+
+    # 3. Docker 이미지 빌드
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    # 4. DockerHub 로그인
+    - name: docker login
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+    # 5. Docker Hub 이미지 빌드/푸시
+    # - name: docker Hub push
+    #   run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo
+      
+    - name: Build and push
+      uses: docker/build-push-action@v5
+      with:
+        context: . 
+        push: true 
+        platforms: linux/amd64 
+        tags: ohdeng/travelog-board:latest
+
+    # 7. 배포
+    - name: executing remote ssh commands
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.REMOTE_SSH_HOST }}
+        username: ${{ secrets.REMOTE_SSH_USERNAME }}
+        password: ${{ secrets.REMOTE_SSH_PASSWORD }}
+        port: ${{ secrets.REMOTE_SSH_PORT }}
+        script: |
+          cd ~/01_DockerCompose
+          docker compose down
+          docker rmi ohdeng/travelog-board:latest
+          docker pull ohdeng/travelog-board:latest
+          docker compose up -d
+      
