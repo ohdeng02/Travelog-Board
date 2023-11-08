@@ -51,7 +51,7 @@ jobs:
   # 7. 배포
   run-docker-image:
     needs: build-docker-image  
-    runs-on: [self-hosted, linux, x64, label-1]
+    runs-on: self-hosted
 
     steps:
       - name: docker compose up
