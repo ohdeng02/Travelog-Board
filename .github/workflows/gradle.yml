@@ -30,47 +30,35 @@ jobs:
       
     # 2. Spring Boot 애플리케이션 빌드
     - name: Build with Gradle
-      # uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
-      # with:
-      #   arguments: clean bootJar
       run: ./gradlew bootJar
       shell: bash
 
     # 3. Docker 이미지 빌드
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+    - name: docker image build
+      run: docker build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest .
 
     # 4. DockerHub 로그인
     - name: docker login
-      uses: docker/login-action@v3
+      uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
     # 5. Docker Hub 이미지 빌드/푸시
-    # - name: docker Hub push
-    #   run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/github-actions-demo
-      
-    - name: Build and push
-      uses: docker/build-push-action@v5
-      with:
-        context: . 
-        push: true 
-        platforms: linux/amd64 
-        tags: ohdeng/travelog-board:latest
+    - name: docker Hub push
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest
 
-    # 7. 배포
-    - name: executing remote ssh commands
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.REMOTE_SSH_HOST }}
-        username: ${{ secrets.REMOTE_SSH_USERNAME }}
-        password: ${{ secrets.REMOTE_SSH_PASSWORD }}
-        port: ${{ secrets.REMOTE_SSH_PORT }}
-        script: |
+  # 7. 배포
+  run-docker-image:
+    needs: build-docker-image  
+    runs-on: [self-hosted, linux, x64, label-1]
+
+    steps:
+      - name: docker compose up
+        run: |
           cd ~/01_DockerCompose
           docker compose down
-          docker rmi ohdeng/travelog-board:latest
-          docker pull ohdeng/travelog-board:latest
+          docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest
           docker compose up -d
       
