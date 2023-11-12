@@ -49,16 +49,26 @@ jobs:
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest
 
   # 7. 배포
-  run-docker-image:
-    needs: build-docker-image  
-    runs-on: self-hosted
+  # run-docker-image:
+  #   needs: build-docker-image  
+  #   runs-on: self-hosted
 
-    steps:
-      - name: docker compose up
-        run: |
-          cd ~/01_DockerCompose
+  #   steps:
+  #     - name: docker compose up
+  #       run: |
+  #         cd ~/01_DockerCompose
+  #         docker compose down
+  #         docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest
+  #         docker pull ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest
+  #         docker compose up -d
+    - name: docker compose up
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.REMOTE_SSH_IP }}
+        username: ${{ secrets.REMOTE_SSH_ID }}
+        key: ${{ secrets.REMOTE_SSH_KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
           docker compose down
-          docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest
-          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest
           docker compose up -d
       
