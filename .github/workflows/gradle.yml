@@ -62,7 +62,7 @@ jobs:
   #         docker pull ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest
   #         docker compose up -d
     - name: docker compose up
-      uses: appleboy/ssh-action@v1.0.0
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.REMOTE_SSH_IP }}
         username: ${{ secrets.REMOTE_SSH_ID }}
