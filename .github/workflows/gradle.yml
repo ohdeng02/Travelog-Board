@@ -34,46 +34,31 @@ jobs:
       shell: bash
 
     # 3. Docker 이미지 빌드
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
-      
+    - name: docker image build
+      run: docker build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest .
+
     # 4. DockerHub 로그인
     - name: docker login
-      uses: docker/login-action@v3
+      uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
     # 5. Docker Hub 이미지 빌드/푸시
-    - name: Build and push
-      uses: docker/build-push-action@v5
-      with:
-        context: . 
-        push: true 
-        platforms: linux/amd64 
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest
-        
-  # 7. 배포
-  # run-docker-image:
-  #   needs: build-docker-image  
-  #   runs-on: self-hosted
+    - name: docker Hub push
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest
 
-  #   steps:
-  #     - name: docker compose up
-  #       run: |
-  #         cd ~/01_DockerCompose
-  #         docker compose down
-  #         docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest
-  #         docker pull ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest
-  #         docker compose up -d
-    - name: docker compose up
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.REMOTE_SSH_IP }}
-        username: ${{ secrets.REMOTE_SSH_ID }}
-        key: ${{ secrets.REMOTE_SSH_KEY }}
-        port: ${{ secrets.PORT }}
-        script: |
+  # 7. 배포
+  run-docker-image:
+    needs: build-docker-image  
+    runs-on: self-hosted
+
+    steps:
+      - name: docker compose up
+        run: |
+          cd ~/01_DockerCompose
           docker compose down
+          docker rmi ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/travelog-board-action:latest
           docker compose up -d
       
