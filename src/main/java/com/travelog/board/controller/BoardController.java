@@ -59,6 +59,14 @@ public class BoardController {
                 .isSuccess(true).msg("지역별 검색 목록이 조회되었습니다.").body(dtos).build(), HttpStatus.OK);
     }
 
+    // 해당 해시태그의 게시글 목록
+    @GetMapping(value = "/tags/{hashtag}")
+    public ResponseEntity<?> getBoardsByTag(@PathVariable String hashtag){
+        List<BoardListResDto> dtos = boardService.getBoardsByTag(hashtag);
+        return new ResponseEntity<>(CMRespDto.builder()
+                .isSuccess(true).msg("해시태그 목록이 조회되었습니다.").body(dtos).build(), HttpStatus.OK);
+    }
+
     // 글 검색
     @GetMapping(value = "/search/{query}")
     public ResponseEntity<?> getSearch(@PathVariable String query){
