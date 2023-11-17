@@ -72,6 +72,17 @@ public class BoardService {
 //        return boardList;
     }
 
+    //해시태그 목록
+    public List<BoardListResDto> getBoardsByTag(String hashtag){
+        Hashtag tag = hashtagRepository.findByHashtag(hashtag)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 해시태그입니다."));
+        List<BoardListResDto> dtos = new ArrayList<>();
+        for(BoardHashtag board: tag.getBoards()){
+            dtos.add(new BoardListResDto(board.getBoard()));
+        }
+        return dtos;
+    }
+
     //글 검색
     @Transactional(readOnly = true)
     public List<BoardListResDto> getSearch(String query){
