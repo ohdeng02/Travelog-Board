@@ -63,5 +63,4 @@ public interface BoardRepository  extends JpaRepository<Board, Long> {
             "where b.title LIKE %:query% OR b.contents LIKE %:query%"
     )
     List<BoardListResDto> findByTitleOrContentsContaining(@Param("query") String query);
-
 }
