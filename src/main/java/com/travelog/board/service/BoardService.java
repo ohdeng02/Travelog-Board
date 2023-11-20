@@ -3,6 +3,7 @@ package com.travelog.board.service;
 import com.travelog.board.dto.BoardListResDto;
 import com.travelog.board.dto.BoardReqDto;
 import com.travelog.board.dto.BoardResDto;
+import com.travelog.board.dto.BookmarkListResDto;
 import com.travelog.board.entity.Board;
 import com.travelog.board.entity.BoardHashtag;
 import com.travelog.board.entity.Comment;
@@ -31,6 +32,12 @@ public class BoardService {
 
     @Autowired
     private final CommentServiceFeignClient commentServiceFeignClient;
+
+    // 북마크 조회
+    @Transactional(readOnly = true)
+    public List<BookmarkListResDto> getBoards(List<Long> boardIds){
+        return boardRepository.findByBoardIds(boardIds);
+    }
 
     // 인기글 조회
     @Transactional(readOnly = true)
@@ -87,7 +94,7 @@ public class BoardService {
 
     // 게시글 조회(조회수 증가)
     @Transactional
-    public BoardResDto readBoard(long id, String nickname, List<Comment> comments){
+    public BoardResDto readBoard(long id, String nickname, List<Comment> comments, String bookmark){
         Board board = boardRepository.findByBoardIdAndNickname(id, nickname);
         System.out.println(board);
         board.updateViews(board.getViews()+1);
@@ -103,7 +110,7 @@ public class BoardService {
 //            System.out.println(e.getMessage());
 //        }
 //        return new BoardResDto(board, comments);
-        return new BoardResDto(board, comments);
+        return new BoardResDto(board, comments, bookmark);
     }
 
     // 글 작성 (db 접근이 조금 많이 이루어지는 것 같아 간추려지면 더 좋을 것 같습니당)

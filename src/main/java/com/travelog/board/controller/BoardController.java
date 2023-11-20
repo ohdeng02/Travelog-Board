@@ -1,15 +1,15 @@
 package com.travelog.board.controller;
 
-import com.travelog.board.dto.BoardListResDto;
-import com.travelog.board.dto.BoardReqDto;
-import com.travelog.board.dto.BoardResDto;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import com.travelog.board.dto.*;
 import com.travelog.board.entity.Board;
 import com.travelog.board.entity.Comment;
 import com.travelog.board.service.BoardService;
-import com.travelog.board.dto.CMRespDto;
 import com.travelog.board.service.CommentServiceFeignClient;
+import com.travelog.board.service.MemberServiceFeignClient;
 import com.travelog.board.service.ScheduleService;
 import feign.FeignException;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +32,14 @@ public class BoardController {
     private final ScheduleService scheduleService;
     @Autowired
     private final CommentServiceFeignClient commentServiceFeignClient;
+    @Autowired
+    private final MemberServiceFeignClient memberServiceFeignClient;
+
+    // 북마크 게시글 목록
+    @PostMapping(value = "/bookmark")
+    public List<BookmarkListResDto> getBoards(@RequestBody List<Long> boardIds){
+        return boardService.getBoards(boardIds);
+    }
 
     // 인기글 조회
     @GetMapping
@@ -69,14 +77,26 @@ public class BoardController {
 
     // 글 조회 OK
     @GetMapping(value = "/{nickname}/{boardId}")
-    public ResponseEntity<?> getBoard(@PathVariable String nickname, @PathVariable Long boardId){
+    public ResponseEntity<?> getBoard(@PathVariable String nickname, @PathVariable Long boardId, HttpServletRequest request){
         List<Comment> comments = null;
         try{
             comments = commentServiceFeignClient.getComments(boardId);
         } catch (FeignException e){
             System.out.println(e.getMessage());
         }
-        BoardResDto board =  boardService.readBoard(boardId, nickname, comments);
+
+        String authorization = request.getHeader("Authorization");
+        String token = authorization.split(" ")[1];
+        BoardBookmarkDto dto = new BoardBookmarkDto(token, boardId);
+        String bookmark = null;
+        try{
+            bookmark = memberServiceFeignClient.isBookmark(dto);
+            System.out.println(bookmark);
+        } catch (FeignException e){
+            System.out.println(e.getMessage());
+        }
+
+        BoardResDto board =  boardService.readBoard(boardId, nickname, comments, bookmark);
         return new ResponseEntity<>(CMRespDto.builder()
                 .isSuccess(true).msg("게시글이 조회되었습니다.").body(board).build(), HttpStatus.OK);
     }

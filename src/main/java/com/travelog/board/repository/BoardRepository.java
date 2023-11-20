@@ -1,6 +1,7 @@
 package com.travelog.board.repository;
 
 import com.travelog.board.dto.BoardListResDto;
+import com.travelog.board.dto.BookmarkListResDto;
 import com.travelog.board.entity.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -19,6 +20,10 @@ public interface BoardRepository  extends JpaRepository<Board, Long> {
 //
 //    @Query(value = "select * from board where status = true order by views desc limit 10", nativeQuery = true)
 //    List<Board> findPopular();
+
+    // 북마크 게시글 조회
+    @Query("select b from Board b where b.boardId in :boardIds")
+    List<BookmarkListResDto> findByBoardIds(List<Long> boardIds);
 
     //인기글 조회
     @Query("select b from Board b " +

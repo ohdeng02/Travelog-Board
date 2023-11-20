@@ -31,6 +31,7 @@ public class BoardResDto {
     private LocalDateTime updatedAt;
     private boolean status;
     private int views;
+    private String bookmark;
 
     // public BoardResDto (Board board){
     //     this.boardId = board.getBoardId();
@@ -46,7 +47,7 @@ public class BoardResDto {
 
     // }
 
-    public BoardResDto(Board board, List<Comment> comments){
+    public BoardResDto(Board board, List<Comment> comments, String bookmark){
         this.boardId = board.getBoardId();
         this.nickname = board.getNickname();
         this.local = board.getLocal();
@@ -60,5 +61,6 @@ public class BoardResDto {
         this.views = board.getViews();
         this.schedules = board.getSchedules();
         this.hashtags = board.getHashtags().stream().map(o->o.getHashtag().getHashtag()).collect(Collectors.toList());
+        this.bookmark = bookmark;
     }
 }
